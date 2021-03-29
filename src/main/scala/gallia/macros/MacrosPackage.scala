@@ -37,53 +37,88 @@ package object macros {
   // to
 
   def toHeadMacro[$TargetType](arg: $TargetType): gallia.HeadO =
-        macro _toHeadMacro[$TargetType]
-          def _toHeadMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[$TargetType]) : bbc.Tree =
-            ToMacros.toHead[$TargetType](bbc)(arg)
+        macro _toHeadOMacro[$TargetType]
+          def _toHeadOMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[$TargetType]) : bbc.Tree =
+            ToMacros.toHeadO[$TargetType](bbc)(arg)
+
+    def toHeadMacro[$TargetType](arg: Traversable[$TargetType]): gallia.HeadS =
+        macro _toHeadSMacro[$TargetType]
+          def _toHeadSMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[Traversable[$TargetType]]) : bbc.Tree =
+            ToMacros.toHeadS[$TargetType](bbc)(arg)
 
     // ---------------------------------------------------------------------------
     def toAObjMacro[$TargetType](arg: $TargetType): gallia.AObj =
         macro _toAObjMacro[$TargetType]
           def _toAObjMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[$TargetType]) : bbc.Tree =
             ToMacros.toAObj[$TargetType](bbc)(arg)
-  
+
+      def toAObjsMacro[$TargetType](arg: Traversable[$TargetType]): gallia.AObjs =
+        macro _toAObjsMacro[$TargetType]
+          def _toAObjsMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[Traversable[$TargetType]]) : bbc.Tree =
+            ToMacros.toAObjs[$TargetType](bbc)(arg)
+
     // ---------------------------------------------------------------------------
     def toObjMacro[$TargetType](arg: $TargetType): gallia.Obj =
         macro _toObjMacro[$TargetType]
           def _toObjMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[$TargetType]) : bbc.Tree =
             ToMacros.toObj[$TargetType](bbc)(arg)
-  
+
+      def toObjsMacro[$TargetType](arg: Traversable[$TargetType]): gallia.Objs =
+        macro _toObjsMacro[$TargetType]
+          def _toObjsMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[Traversable[$TargetType]]) : bbc.Tree =
+            ToMacros.toObjs[$TargetType](bbc)(arg)
+
     // ---------------------------------------------------------------------------
     def toClsMacro[$TargetType](arg: $TargetType): gallia.Cls =
         macro _toClsMacro1[$TargetType]
           def _toClsMacro1[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[$TargetType]) : bbc.Tree =
-            ToMacros.toCls[$TargetType](bbc)(arg)
+            ToMacros.toCls1[$TargetType](bbc)(arg)
 
-    // ---------------------------------------------------------------------------
-    def toClsMacro[$TargetType]: Cls =
+      def toClsMacro[$TargetType](arg: Traversable[$TargetType]): gallia.Cls =
         macro _toClsMacro2[$TargetType]
-          def _toClsMacro2[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext): bbc.Tree = 
+          def _toClsMacro2[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[Traversable[$TargetType]]) : bbc.Tree =
+            ToMacros.toCls2[$TargetType](bbc)(arg)
+              
+    // ===========================================================================
+    def toClsMacro[$TargetType]: Cls =
+        macro _toClsMacro3[$TargetType]
+          def _toClsMacro3[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext): bbc.Tree = 
             SchematizingMacro[$TargetType](bbc)  
 
   // ===========================================================================
   // from
 
   def fromHeadMacro[$TargetType](arg: gallia.HeadO): $TargetType =
-        macro _undynamizer4[$TargetType]
-          def _undynamizer4[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.HeadO]): bbc.Tree = 
-            FromMacros.fromHead[$TargetType](bbc)(arg)
-    
+        macro _fromHeadOMacro[$TargetType]
+          def _fromHeadOMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.HeadO]): bbc.Tree = 
+            FromMacros.fromHeadO[$TargetType](bbc)(arg)
+
+  def fromHeadMacro[$TargetType](arg: gallia.HeadS): List[$TargetType] =
+        macro _fromHeadSMacro[$TargetType]
+          def _fromHeadSMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.HeadS]): bbc.Tree = 
+            FromMacros.fromHeadS[$TargetType](bbc)(arg)
+
     // ---------------------------------------------------------------------------
     def fromAObjMacro[$TargetType](arg: gallia.AObj): $TargetType =
         macro _fromAObjMacro[$TargetType]
           def _fromAObjMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.AObj]): bbc.Tree = 
             FromMacros.fromAObj[$TargetType](bbc)(arg)
 
+    def fromAObjsMacro[$TargetType](arg: gallia.AObjs): List[$TargetType] =
+        macro _fromAObjsMacro[$TargetType]
+          def _fromAObjsMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.AObjs]): bbc.Tree = 
+            FromMacros.fromAObjs[$TargetType](bbc)(arg)
+          
     // ---------------------------------------------------------------------------
     def fromObjMacro[$TargetType](arg: gallia.Obj): $TargetType =
         macro _fromObjMacro[$TargetType]
           def _fromObjMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.Obj]): bbc.Tree = 
             FromMacros.fromObj[$TargetType](bbc)(arg)
+
+    def fromObjsMacro[$TargetType](arg: gallia.Objs): List[$TargetType] =
+        macro _fromObjsMacro[$TargetType]
+          def _fromObjsMacro[$TargetType : bbc.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.Objs]): bbc.Tree = 
+            FromMacros.fromObjs[$TargetType](bbc)(arg)
 
   // ===========================================================================
   private[macros] type ClassName    = String
