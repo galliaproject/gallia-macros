@@ -18,9 +18,10 @@ case class ClassTraversal(values: Seq[Cls]) {
     def parse[$TargetType : universe.WeakTypeTag](universe: Universe): ClassTraversal =
       universe
         .weakTypeTag[$TargetType]
-        .tpe  
+        .tpe
         .thn(gallia.reflect.TypeNode.parse)
         .thn(rec)
+        .distinct // in case the same class is referenced multiple times
         .thn(ClassTraversal.apply)     
     
     // ===========================================================================

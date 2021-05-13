@@ -57,11 +57,19 @@ object UndynamizerMacro {
           val subDynamizerVariable = TermName(formatVariableName(c.forceName))
   
           field.info.container match {
-            case Container._One => q"${subDynamizerVariable}.apply(${objectVariable}.obj  (${field.key}))"                                     //               T
-          	case Container._Opt => q"                              ${objectVariable}.obj_ (${field.key}).map(${subDynamizerVariable}.apply)"   //        Option[T]
-            case Container._Nes => q"                              ${objectVariable}.objs (${field.key}).map(${subDynamizerVariable}.apply)"   //        Seq   [T]      	
-          	case Container._Pes => q"                              ${objectVariable}.objs_(${field.key}).map(${subDynamizerVariable}.apply)" } // Option[Seq   [T]]       
+            case Container._One => q"${TermName(field.skey)} = ${subDynamizerVariable}.apply(${objectVariable}.obj  (${field.key}))"                                     //               T
+            case Container._Opt => q"${TermName(field.skey)} =                               ${objectVariable}.obj_ (${field.key}).map(${subDynamizerVariable}.apply)"   //        Option[T]
+            case Container._Nes => q"${TermName(field.skey)} =                               ${objectVariable}.objs (${field.key}).map(${subDynamizerVariable}.apply)"   //        Seq   [T]      	
+            case Container._Pes => q"${TermName(field.skey)} =                               ${objectVariable}.objs_(${field.key}).map(${subDynamizerVariable}.apply)" } // Option[Seq   [T]]
+
+        // ---------------------------------------------------------------------------
+        case BasicType._Enum =>         
+          val accessorMethod = TermName(formatAccessorMethodName(field.info.container, BasicType._Enum))      
   
+          val enumTypeName = TypeName(field.forceEnumName.splitBy(".").last /* TODO: must be in scope... */)
+
+          q"${TermName(field.skey)} = ${objectVariable}.${accessorMethod}[${enumTypeName}](${field.key})"        
+          
         // ---------------------------------------------------------------------------
         case basicType: BasicType =>
           val accessorMethod = TermName(formatAccessorMethodName(field.info.container, basicType))      
@@ -74,8 +82,9 @@ object UndynamizerMacro {
     private def formatAccessorMethodName(container: Container, basicType: BasicType): String = // see ObjAccessors (id210326140514)
   	  basicType
   	    .fullName
-  	    .splitBy(".").last.uncapitalize // TODO: store in BasicType rather?
-  	    .stripPrefix("date") + 
+  	    .stripPrefix("Local") // eg LocalDate
+  	    .stripSuffix("Entry") // eg enumEntry
+  	    .splitBy(".").last.uncapitalize  + // TODO: store in BasicType rather?  	    
       (container match {
           case Container._One => ""
           case Container._Opt => "_"

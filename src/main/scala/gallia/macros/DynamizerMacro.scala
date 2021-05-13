@@ -19,9 +19,8 @@ object DynamizerMacro {
     val methodTrees: Seq[bbc.Tree] =
       subTrees
         .map { case (className, subTree) =>
-          val method = TermName(formatVariableName(className))                       
-                                 
-          q"""def ${method}: Function[${TypeName(className)}, ${typeOf[gallia.Obj]}] = ${subTree}"""}
+          // eg: def addressDynamizer: Function[Address, Obj] = ...
+          q"""def ${TermName(formatVariableName(className))}: Function[${TypeName(className)}, ${typeOf[gallia.Obj]}] = ${subTree}"""}
 
   	// ---------------------------------------------------------------------------
     q"""
