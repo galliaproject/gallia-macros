@@ -1,4 +1,4 @@
-// gallia-macros; TODO: t210309100048 - relies on symlink to gallia-core's project/*.scala files; no (reasonnable) sbt way? windows users have to copy them instead?
+// gallia-macros
 
 // ===========================================================================
 lazy val root = (project in file("."))
