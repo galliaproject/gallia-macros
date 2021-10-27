@@ -83,8 +83,8 @@ object UndynamizerMacro {
   	  basicType
   	    .fullName
   	    .stripPrefix("Local") // eg LocalDate
-  	    .stripSuffix("Entry") // eg enumEntry
-  	    .splitBy(".").last.uncapitalize  + // TODO: store in BasicType rather?  	    
+  	    .replace("EnumEntry", "enm") // "enum" is reserved in Scala 3
+  	    .splitBy(".").last.uncapitalizeFirst  + // TODO: store in BasicType rather?  	    
       (container match {
           case Container._One => ""
           case Container._Opt => "_"

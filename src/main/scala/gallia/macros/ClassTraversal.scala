@@ -35,7 +35,7 @@ case class ClassTraversal(values: Seq[Cls]) {
       val nestedClasses: Seq[Cls] =
         leaf
           .fields
-          .flatMap { _.node.as.someIf(_.isContainedDataClass) }
+          .flatMap { _.node.in.someIf(_.isContainedDataClass) }
           .flatMap(rec)
 
       // ---------------------------------------------------------------------------
