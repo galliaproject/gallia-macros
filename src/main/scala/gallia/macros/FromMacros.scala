@@ -7,11 +7,11 @@ object FromMacros {
 
   def fromHeadO[$TargetType : bbc.universe.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.HeadO]): bbc.Tree /* $TargetType */ = {
       import bbc.universe._    
-      q"""gallia.macros.undynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply(${arg}.forceAObj.data)""" }  
+      q"""gallia.macros.undynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply(${arg}._forceResult.data)""" }  
   
     def fromHeadS[$TargetType : bbc.universe.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.HeadS]): bbc.Tree /* List[$TargetType] */ = {
       import bbc.universe._    
-      q"""${arg}.forceAObjs.data.consume.map(gallia.macros.undynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply).toList""" }
+      q"""${arg}._forceResult.data.consumeSelfClosing.map(gallia.macros.undynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply).toList""" }
   
   // ---------------------------------------------------------------------------
   // for good measure
@@ -21,7 +21,7 @@ object FromMacros {
   
     def fromAObjs[$TargetType : bbc.universe.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.AObjs]): bbc.Tree /* List[$TargetType] */ = {
       import bbc.universe._    
-      q"""${arg}.data.consume.map(gallia.macros.undynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply).toList""" }
+      q"""${arg}.data.consumeSelfClosing.map(gallia.macros.undynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply).toList""" }
 
   // ---------------------------------------------------------------------------
   def fromObj[$TargetType : bbc.universe.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.Obj]): bbc.Tree /* $TargetType */ = {
@@ -30,7 +30,7 @@ object FromMacros {
     
     def fromObjs[$TargetType : bbc.universe.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[gallia.Objs]): bbc.Tree /* List[$TargetType] */ = {
       import bbc.universe._    
-      q"""${arg}.consume.map(gallia.macros.undynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply).toList""" }  
+      q"""${arg}.consumeSelfClosing.map(gallia.macros.undynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply).toList""" }
 
 }
 

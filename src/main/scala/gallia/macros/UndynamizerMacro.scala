@@ -8,6 +8,10 @@ object UndynamizerMacro {
 
   def apply[$TargetType : bbc.universe.WeakTypeTag](bbc: BlackboxContext): bbc.Tree = { import bbc.universe._
 
+    if (fullName[$TargetType](bbc.universe) == "scala.Nothing") {
+      aptus.illegalState("must provide static type to map from dynamic to (220509143831)") }
+
+    // ---------------------------------------------------------------------------
     val subTrees: Seq[(ClassName, bbc.Tree)] =
       ClassTraversal
         .parse[$TargetType](bbc.universe)
@@ -49,30 +53,29 @@ object UndynamizerMacro {
   // ===========================================================================
   private def valueUndynamizer(field: Fld)(bbc: BlackboxContext): bbc.Tree = { import bbc.universe._
   		val objectVariable = TermName(InstanceVariableName)
-  		  
-      field.info.containee match {
+
+      field.subInfo1.valueType match {
   
         // ---------------------------------------------------------------------------    
         case c: Cls =>
           val subDynamizerVariable = TermName(formatVariableName(c.forceName))
   
-          field.info.container match {
+          field.info.container1 match {
             case Container._One => q"${TermName(field.skey)} = ${subDynamizerVariable}.apply(${objectVariable}.obj  (${field.key}))"                                     //               T
             case Container._Opt => q"${TermName(field.skey)} =                               ${objectVariable}.obj_ (${field.key}).map(${subDynamizerVariable}.apply)"   //        Option[T]
             case Container._Nes => q"${TermName(field.skey)} =                               ${objectVariable}.objs (${field.key}).map(${subDynamizerVariable}.apply)"   //        Seq   [T]      	
             case Container._Pes => q"${TermName(field.skey)} =                               ${objectVariable}.objs_(${field.key}).map(${subDynamizerVariable}.apply)" } // Option[Seq   [T]]
 
         // ---------------------------------------------------------------------------
-        case BasicType._Enum =>         
-          val accessorMethod = TermName(formatAccessorMethodName(field.info.container, BasicType._Enum))      
-  
-          val enumTypeName = TypeName(field.forceEnumName.splitBy(".").last /* TODO: must be in scope... */)
+        case _: _Enm =>
+          val accessorMethod = TermName("enumeratum")
+          val enumatumName   = TypeName(field.forceEnumName.splitBy(".").last)
 
-          q"${TermName(field.skey)} = ${objectVariable}.${accessorMethod}[${enumTypeName}](${field.key})"        
-          
+          q"${TermName(field.skey)} = ${objectVariable}.${accessorMethod}[${enumatumName}](${field.key})"
+
         // ---------------------------------------------------------------------------
         case basicType: BasicType =>
-          val accessorMethod = TermName(formatAccessorMethodName(field.info.container, basicType))      
+          val accessorMethod = TermName(formatAccessorMethodName(field.info.container1, basicType))      
   
           q"${TermName(field.skey)} = ${objectVariable}.${accessorMethod}(${field.key})"        
       }
@@ -80,12 +83,7 @@ object UndynamizerMacro {
   
     // ---------------------------------------------------------------------------
     private def formatAccessorMethodName(container: Container, basicType: BasicType): String = // see ObjAccessors (id210326140514)
-  	  basicType
-  	    .fullName
-  	    .stripPrefix("Local") // eg LocalDate
-  	    .replace("EnumEntry", "enm") // "enum" is reserved in Scala 3
-  	    .splitBy(".").last.uncapitalizeFirst  + // TODO: store in BasicType rather?  	    
-      (container match {
+  	  basicType.accessorName + (container match {
           case Container._One => ""
           case Container._Opt => "_"
           case Container._Nes => "s"

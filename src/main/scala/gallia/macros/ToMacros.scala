@@ -41,7 +41,7 @@ object ToMacros {
 
     def toObjs[$TargetType : bbc.universe.WeakTypeTag](bbc: BlackboxContext)(arg: bbc.Expr[Traversable[$TargetType]]): bbc.Tree /* Objs */ = {
       import bbc.universe._  
-        q"""Objs.from(${arg}.map(gallia.macros.dynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply))""" }
+        q"""Objs.from(${arg}.toList.map(gallia.macros.dynamizerMacro[${weakTypeTag[$TargetType].tpe}].apply))""" }
 
   // ---------------------------------------------------------------------------
   def toCls1[$TargetType : bbc.universe.WeakTypeTag](bbc: BlackboxContext)(ignored: bbc.Expr[$TargetType]): bbc.Tree /* Cls */ = {

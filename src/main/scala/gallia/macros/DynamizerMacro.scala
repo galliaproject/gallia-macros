@@ -51,18 +51,19 @@ object DynamizerMacro {
     val accessorMethod   = TermName(field.skey)
 
     // ---------------------------------------------------------------------------    
-    field.info.containee match {
+    field.subInfo1.valueType match {
     
       case c: Cls =>
         val subDynamizerVariable = TermName(formatVariableName(c.forceName))
         
-        field.info.container match {
+        field.info.container1 match {
           case Container._One => q"${subDynamizerVariable}.apply(${instanceVariable}.${accessorMethod})"                                            //               T
           case Container._Opt => q"                              ${instanceVariable}.${accessorMethod}.map(      ${subDynamizerVariable}.apply)"    //        Option[T]
           case Container._Nes => q"                              ${instanceVariable}.${accessorMethod}.map(      ${subDynamizerVariable}.apply)"    //        Seq   [T]
           case Container._Pes => q"                              ${instanceVariable}.${accessorMethod}.map(_.map(${subDynamizerVariable}.apply))" } // Option[Seq   [T]]
 
-      // ---------------------------------------------------------------------------        
+      // ---------------------------------------------------------------------------
+      case _: _Enm      =>       q"gallia.EnumValue(             ${instanceVariable}.${accessorMethod}.entryName)"
       case _: BasicType =>       q"                              ${instanceVariable}.${accessorMethod}"
     }
   }

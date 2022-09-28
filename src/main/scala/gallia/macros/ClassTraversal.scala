@@ -1,11 +1,9 @@
-package gallia.macros
+package gallia
+package macros
 
 import aptus._
 
-import scala.reflect.macros.blackbox.{Context => BlackboxContext}
-import scala.reflect.runtime.{universe => RuntimeUniverse}
 import scala.reflect.api.Universe
-import enumeratum.{Enum, EnumEntry}
 import gallia.reflect._
 
 // ===========================================================================
@@ -19,10 +17,10 @@ case class ClassTraversal(values: Seq[Cls]) {
       universe
         .weakTypeTag[$TargetType]
         .tpe
-        .thn(gallia.reflect.TypeNode.parse)
-        .thn(rec)
+        .pipe(gallia.reflect.TypeNode.parse)
+        .pipe(rec)
         .distinct // in case the same class is referenced multiple times
-        .thn(ClassTraversal.apply)     
+        .pipe(ClassTraversal.apply)
     
     // ===========================================================================
     private def rec(node: TypeNode): Seq[Cls] = {

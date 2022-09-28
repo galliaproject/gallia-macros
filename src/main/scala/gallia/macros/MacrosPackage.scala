@@ -124,7 +124,6 @@ package object macros {
   private[macros] type ClassName    = String
   private[macros] type FieldName    = String  
   private[macros] type EnumName     = String
-  private[macros] type EnumValue    = String
   private[macros] type VariableName = String
 
   // ---------------------------------------------------------------------------
@@ -132,23 +131,34 @@ package object macros {
   val  Cls = gallia.meta.Cls
   
   type Fld = gallia.meta.Fld
-  val  Fld = gallia.meta.Fld
 
   type Info  = gallia.meta.Info 
   val  Info  = gallia.meta.Info
+    
+  type SubInfo  = gallia.meta.SubInfo 
+  val  SubInfo  = gallia.meta.SubInfo
   
   type Container = gallia.reflect.Container
   val  Container = gallia.reflect.Container
 
-  type Containee = gallia.meta.Containee
+  type ValueType = gallia.meta.ValueType
   
   type BasicType = gallia.reflect.BasicType
   val  BasicType = gallia.reflect.BasicType
 
-  // ===========================================================================  
+  type _Enm = gallia.reflect.BasicType._Enm
+  val  _Enm = gallia.reflect.BasicType._Enm
+
+  type EnumValue = gallia.EnumValue
+  val  EnumValue = gallia.EnumValue
+
+  // ===========================================================================
   private[macros] def formatVariableName(name: ClassName, suffix: String): VariableName =
     s"`${(name.head.toLower +: name.tail)}${suffix}`"
- 
+
+  // ---------------------------------------------------------------------------
+  private[macros] def fullName[$TargetType : universe.WeakTypeTag](universe: Universe): String =
+    universe.weakTypeTag[$TargetType].tpe.typeSymbol.fullName
 }
 
 // ===========================================================================
