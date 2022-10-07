@@ -18,7 +18,7 @@ object UndynamizerMacro {
         .topologicalTraversal
         .map { classUndynamizer(_)(bbc) }
 
-  	// ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
     val methodTrees: Seq[bbc.Tree] =
       subTrees
         .map { case (className, subTree) =>
@@ -26,7 +26,7 @@ object UndynamizerMacro {
                                  
           q"""def ${method}: Function[${typeOf[gallia.Obj]}, ${TypeName(className)}] = ${subTree}"""}
 
-  	// ---------------------------------------------------------------------------  
+    // ---------------------------------------------------------------------------
     q"""
       ..${methodTrees}
       
@@ -52,7 +52,7 @@ object UndynamizerMacro {
 
   // ===========================================================================
   private def valueUndynamizer(field: Fld)(bbc: BlackboxContext): bbc.Tree = { import bbc.universe._
-  		val objectVariable = TermName(InstanceVariableName)
+      val objectVariable = TermName(InstanceVariableName)
 
       field.subInfo1.valueType match {
   
@@ -63,7 +63,7 @@ object UndynamizerMacro {
           field.info.container1 match {
             case Container._One => q"${TermName(field.skey)} = ${subDynamizerVariable}.apply(${objectVariable}.obj  (${field.key}))"                                     //               T
             case Container._Opt => q"${TermName(field.skey)} =                               ${objectVariable}.obj_ (${field.key}).map(${subDynamizerVariable}.apply)"   //        Option[T]
-            case Container._Nes => q"${TermName(field.skey)} =                               ${objectVariable}.objs (${field.key}).map(${subDynamizerVariable}.apply)"   //        Seq   [T]      	
+            case Container._Nes => q"${TermName(field.skey)} =                               ${objectVariable}.objs (${field.key}).map(${subDynamizerVariable}.apply)"   //        Seq   [T]
             case Container._Pes => q"${TermName(field.skey)} =                               ${objectVariable}.objs_(${field.key}).map(${subDynamizerVariable}.apply)" } // Option[Seq   [T]]
 
         // ---------------------------------------------------------------------------
@@ -83,7 +83,7 @@ object UndynamizerMacro {
   
     // ---------------------------------------------------------------------------
     private def formatAccessorMethodName(container: Container, basicType: BasicType): String = // see ObjAccessors (id210326140514)
-  	  basicType.accessorName + (container match {
+      basicType.accessorName + (container match {
           case Container._One => ""
           case Container._Opt => "_"
           case Container._Nes => "s"

@@ -15,14 +15,14 @@ object DynamizerMacro {
         .topologicalTraversal
         .map { dynamizeClass(_)(bbc) }
 
-  	// ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
     val methodTrees: Seq[bbc.Tree] =
       subTrees
         .map { case (className, subTree) =>
           // eg: def addressDynamizer: Function[Address, Obj] = ...
           q"""def ${TermName(formatVariableName(className))}: Function[${TypeName(className)}, ${typeOf[gallia.Obj]}] = ${subTree}"""}
 
-  	// ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
     q"""
       ..${methodTrees}
       
