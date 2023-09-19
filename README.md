@@ -103,7 +103,7 @@ Preferably to other case classes after a long and convoluted journey:
 toHeadMacro(johnStatic)
     .fission(_.string("name")).as("first", "last").using(_.splitBy(" ", 2).force.tuple2)
     // ...
-  .thn(fromHeadMacro[PersonAlt](_))
+  .pipe(fromHeadMacro[PersonAlt](_))
   .assert(_ == PersonAlt("John", "Smith", johnStatic.phones, johnStatic.addresses))
 ```
 
