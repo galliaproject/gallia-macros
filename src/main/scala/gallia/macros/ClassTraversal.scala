@@ -17,7 +17,7 @@ case class ClassTraversal(values: Seq[Cls]) {
       universe
         .weakTypeTag[$TargetType]
         .tpe
-        .pipe(gallia.reflect.TypeNode.parse)
+        .pipe(gallia.reflect.lowlevel.TypeLeafParserRuntime2._parseTypeNode)
         .pipe(rec)
         .distinct // in case the same class is referenced multiple times
         .pipe(ClassTraversal.apply)
@@ -33,7 +33,7 @@ case class ClassTraversal(values: Seq[Cls]) {
       val nestedClasses: Seq[Cls] =
         leaf
           .fields
-          .flatMap { _.node.in.someIf(_.isContainedDataClass) }
+          .flatMap { _.typeNode.in.someIf(_.isContainedDataClass) }
           .flatMap(rec)
 
       // ---------------------------------------------------------------------------

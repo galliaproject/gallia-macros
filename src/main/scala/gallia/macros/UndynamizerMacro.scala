@@ -71,7 +71,7 @@ object UndynamizerMacro {
           val accessorMethod = TermName("enumeratum")
           val enumatumName   = TypeName(field.forceEnumName.splitBy(".").last)
 
-          q"${TermName(field.skey)} = ${objectVariable}.${accessorMethod}[${enumatumName}](${field.key})"
+          q"${TermName(field.skey)} = ${objectVariable}.${accessorMethod}[${enumatumName}](${field.key})" // TODO: t231208115122 - call withName directly
 
         // ---------------------------------------------------------------------------
         case basicType: BasicType =>

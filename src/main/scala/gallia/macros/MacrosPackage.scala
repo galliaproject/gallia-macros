@@ -1,12 +1,8 @@
 package gallia
 
-import scala.util.chaining._
-
 import scala.reflect.api.Universe
 import scala.reflect.runtime.{universe => RuntimeUniverse}
 import scala.reflect.macros.blackbox.{Context => BlackboxContext}
-
-import aptus._
 
 // ===========================================================================
 package object macros {
@@ -143,11 +139,11 @@ package object macros {
 
   type ValueType = gallia.meta.ValueType
   
-  type BasicType = gallia.reflect.BasicType
-  val  BasicType = gallia.reflect.BasicType
+  type BasicType = gallia.meta.basic.BasicType
+  val  BasicType = gallia.meta.basic.BasicType
 
-  type _Enm = gallia.reflect.BasicType._Enm
-  val  _Enm = gallia.reflect.BasicType._Enm
+  type _Enm = gallia.meta.basic.BasicType._Enm
+  val  _Enm = gallia.meta.basic.BasicType._Enm
 
   type EnumValue = gallia.EnumValue
   val  EnumValue = gallia.EnumValue
